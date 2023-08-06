@@ -1,0 +1,63 @@
+﻿@page "/students/{ID:int}"
+@using Exercise11.Data
+@inject StudentService StudentService
+@inject NavigationManager NavigationMenager
+
+<h3>Student details</h3>
+
+
+
+@if (student != null)
+{
+    <p>First name: </p>
+
+    <div>
+       @student.FirstName
+    </div>
+    <p>Last name: </p>
+
+    <div>
+      @student.LastName
+    </div>
+    <p>Birthdate:</p><br />
+    <div>
+       @student.Birthdate.ToShortDateString()
+    </div>
+    <p>Studies:</p>
+
+    <div>
+       @student.Studies
+    </div>
+    <p>
+        Avatar:
+    </p>
+    <div>
+        @student.Avatar
+    </div>
+    <div>
+        <p><img src="@student.Avatar" alt="Avatar" ></p>
+    </div>
+}
+else
+{
+    <p>Student not found.</p>
+}
+
+<button @onclick="@(() => Return())">Return</button>
+
+
+@code {
+    [Parameter]
+    public int ID { get; set; }
+    private Student student;
+
+    protected override void OnInitialized()
+    {
+        student = StudentService.Students.Find(s => s.Id == ID);
+    }
+
+    void Return()
+    {
+        NavigationMenager.NavigateTo("/students");
+    }
+}

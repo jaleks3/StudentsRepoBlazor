@@ -1,0 +1,16 @@
+﻿@page "/"
+@inject NavigationManager NavigationMenager
+
+<PageTitle>Home</PageTitle>
+
+<h1>Zadanie 11!</h1>
+
+<button @onclick="@(() => GoToStudents())">Go to list of students</button>
+
+@code
+{
+void GoToStudents()
+    {
+        NavigationMenager.NavigateTo($"/students");
+    }
+}

@@ -1,0 +1,71 @@
+﻿@page "/students"
+@using Exercise11.Data
+@inject StudentService StudentService
+@inject IJSRuntime js
+@inject NavigationManager NavigationMenager
+
+
+<h3>StudentList</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th button @onclick="(() => SortBy())">Avatar</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>BirthDate</th>
+            <th>Studies</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Students)
+        {
+            <tr>
+                <td><img src="@student.Avatar" alt="@student.FirstName @student.LastName" /></td>
+                <td>@student.FirstName</td>
+                <td>@student.LastName</td>
+                <td>@student.Birthdate</td>
+                <td>@student.Studies</td>
+            <td>
+                <button @onclick="@(() => OpenDetails(student.Id))">Open details</button>
+                <button @onclick="@(() => Delete(student.Id))">Delete</button>
+            </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    public List<Student> Students { get; set; }
+    protected override void OnInitialized()
+    {
+        Students = StudentService.Students;
+    }
+
+    void OpenDetails(int Id)
+    {
+        NavigationMenager.NavigateTo($"/students/{Id}");       
+    }
+
+    void Return()
+    {
+        NavigationMenager.NavigateTo($"/students");
+    }
+
+    async Task Delete(int Id)
+    {
+        var s = Students.Find(s => s.Id == Id);
+
+        bool confirmed = await js.InvokeAsync<bool>($"confirm", "Are you sure you want to delete student " + s.Id );
+
+        if (confirmed)
+            StudentService.Students.Remove(s);
+
+    }
+
+    void SortBy()
+    {
+        Students.OrderBy(s => s.Studies);
+    }
+
+}
